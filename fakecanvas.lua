@@ -208,17 +208,17 @@ local _wrap_funcs = {
 	setCanvas = setCanvas,
 	newCanvas = Canvas,
 	
-	draw = function (obj,  x, y, r, sw, sh, ox, oy, kx, ky)
+	draw = function (obj, ...)
 		if canvases[obj] then
-			return _love_funcs.drawq(obj:_getImage(), obj:_getQuad(), x, y, r, sw, sh, ox, oy, kx, ky) -- flip texcoords part 2
+			return _love_funcs.drawq(obj:_getImage(), obj:_getQuad(), ...) -- flip texcoords part 2
 		end
-		return _love_funcs.draw(obj, x, y, r, sw, sh, ox, oy, kx, ky)
+		return _love_funcs.draw(obj, ...)
 	end,
-	drawq = function (obj, x, y, r, sw, sh, ox, oy, kx, ky)
+	drawq = function (obj, ...)
 		if canvases[obj] then
-			return _love_funcs.drawq(obj:_getImage(), x, y, r, sw, sh, ox, oy, kx, ky)
+			return _love_funcs.drawq(obj:_getImage(), ...)
 		end
-		return _love_funcs.drawq(obj, x, y, r, sw, sh, ox, oy, kx, ky)
+		return _love_funcs.drawq(obj, ...)
 	end,
 	
 	pe_send   = function (pe, name, data)
@@ -249,7 +249,6 @@ function M.enable (state)
 		love.graphics.getCanvas = function () return nil end
 		love.graphics.setCanvas = function () end
 		love.graphics.newCanvas = function () error("canvases disabled", 2) end
-		
 		love.graphics.draw      = _love_funcs.draw
 		love.graphics.drawq     = _love_funcs.drawq
 		
