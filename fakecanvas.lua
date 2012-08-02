@@ -275,6 +275,8 @@ end
 
 function M.getMaxCanvasSize (hw, hh)
 	local w, h = love.graphics.getWidth(), love.graphics.getHeight()
+	hw, hh = tonumber(hw) or w, tonumber(hh) or h
+	
 	if npot_supported then
 		return math.min(hw, w), math.min(hh, h)
 	else
