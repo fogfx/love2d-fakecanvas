@@ -86,7 +86,7 @@ function canvas:type ()
 end
 
 function canvas:typeOf (type) 
-	return _types[type] 
+	return not not _types[type] 
 end
 
 -- internal
