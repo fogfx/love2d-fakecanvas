@@ -31,7 +31,6 @@ love.graphics.setCanvas(canvas3)
 ```
 the background gets saved when `setCanvas()` is called with an argument, but it doesn't get restored until it's called without an argument. currently only one state is saved so it's possible the above code would trash the background. this isn't a problem if you only ever use `renderTo()` because that automatically handles the `setCanvas()` calls
 * `love.graphics.translate()`, `love.graphics.rotate()`, `love.graphics.scale()`, and `love.graphics.shear()` are not handled
-* stencils are not handled
 * will changing modes during canvas drawing destroy the contents?
 
 beware: i have done only minimal testing of this library so it's possible there are cases where it doesn't work correctly or at all, or that the entire idea is ultimately unworkable!

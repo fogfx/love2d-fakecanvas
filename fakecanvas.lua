@@ -147,6 +147,8 @@ savefbstate()
 
 local function setCanvas (...)
 	assert(select("#", ...) == 0 or (select("#", ...) == 1 and type(...) == "userdata"), "Incorrect parameter type: expected userdata")
+	love.graphics.setStencil() -- fortunately LOVE does this as well which makes things much easier
+	
 	local to = ...
 	if to then
 		current_canvas = canvases[to]
