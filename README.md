@@ -26,7 +26,7 @@ so, consider this more of a proof-of-concept than as an actual alternative. get 
 
 fakecanvas directly replaces some of LÖVE's functions, so there are no special functions you need to use. however, the library itself consists of a couple extra functions:
 
-* `enable([state])`: control fakecanvas' usage directly by passing the `state` argument, which can be one of:
+* `enable([state])`: control fakecanvas' usage directly by passing the `state` argument. returns the module, for your chaining pleasure. `state` can be one of:
  * `true`: force usage of fakecanvas' functions even if real canvases are supported
  * `false`: disable canvas functions even if real canvases are supported
  * `nil` (or no argument): **default**. fakecanvas will only use its own functions if real canvases are not supported
@@ -38,7 +38,7 @@ fakecanvas directly replaces some of LÖVE's functions, so there are no special 
 ```lua
 local c
 function love.load () 
-  local fc = require 'fakecanvas'
+  local fc = require 'fakecanvas'.enable(true) -- force usage of fake canvases
   
   c = love.graphics.newCanvas(fc.getMaxCanvasSize(256, 256))
   
