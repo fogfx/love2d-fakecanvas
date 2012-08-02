@@ -178,7 +178,6 @@ local function setCanvas (...)
 		--print "restoring background state"
 		love.graphics.setBackgroundColor(0, 0, 0, 0)
 		love.graphics.clear()
-		love.graphics.clear()
 		love.graphics.setScissor()
 		love.graphics.draw(_fb_state.image, 0, 0)
 		love.graphics.setBackgroundColor(unpack(_fb_state.color))
