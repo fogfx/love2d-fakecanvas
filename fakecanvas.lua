@@ -190,7 +190,9 @@ end
 local registry = debug.getregistry() -- naughty!
 
  -- throwaway, forces LOVE to load the :send() method
-love.graphics.newPixelEffect [[vec4 effect( vec4 x, Image y, vec2 z, vec2 w) { return vec4(0, 0, 0, 0); }]]
+if pixeleffect_supported then
+	love.graphics.newPixelEffect [[vec4 effect( vec4 x, Image y, vec2 z, vec2 w) { return vec4(0, 0, 0, 0); }]]
+end
 
 local _love_funcs = { 
 	getCanvas = love.graphics.getCanvas,
@@ -200,7 +202,7 @@ local _love_funcs = {
 	draw      = love.graphics.draw,
 	drawq     = love.graphics.drawq,
 	
-	pe_send   = registry.PixelEffect.send,
+	pe_send   = pixeleffect_supported and registry.PixelEffect.send,
 	--technically sendCanvas should also be wrapped but that's not officially exposed
 }
 local _wrap_funcs = { 
@@ -244,7 +246,9 @@ function M.enable (state)
 		love.graphics.draw      = _wrap_funcs.draw
 		love.graphics.drawq     = _wrap_funcs.drawq
 		
-		registry.PixelEffect.send = _wrap_funcs.pe_send
+		if pixeleffect_supported then
+			registry.PixelEffect.send = _wrap_funcs.pe_send
+		end
 	elseif state == false then 
 		love.graphics.getCanvas = function () return nil end
 		love.graphics.setCanvas = function () end
@@ -252,15 +256,18 @@ function M.enable (state)
 		love.graphics.draw      = _love_funcs.draw
 		love.graphics.drawq     = _love_funcs.drawq
 		
-		registry.PixelEffect.send = _love_funcs.pe_send
+		if pixeleffect_supported then
+			registry.PixelEffect.send = _love_funcs.pe_send
+		end
 	elseif state == nil and canvas_supported then
 		love.graphics.getCanvas = _love_funcs.getCanvas
 		love.graphics.setCanvas = _love_funcs.setCanvas
 		love.graphics.newCanvas = _love_funcs.newCanvas
 		love.graphics.draw      = _love_funcs.draw
 		love.graphics.drawq     = _love_funcs.drawq
-		
-		registry.PixelEffect.send = _love_funcs.pe_send
+		if pixeleffect_supported then
+			registry.PixelEffect.send = _love_funcs.pe_send
+		end
 	end
 	return M
 end
