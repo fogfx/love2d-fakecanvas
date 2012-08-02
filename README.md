@@ -4,7 +4,7 @@ fakecanvas is an attempt at emulating the functionality of canvases (render to t
 
 it is more or less a drop-in library, in that all you need to do is call `require 'fakecanvas'` (preferably inside `love.load`) to use it. fakecanvas' own functions will only be used if `love.graphics.isSupported "canvas"` is false, unless this behavior is overridden (see below).
 
-since it uses (a few) screenshots in order to isolate drawing operations, which means there are some amusing drawbacks:
+it uses (a few) screenshots in order to isolate drawing operations, which means there are some amusing drawbacks:
 
 * it's slow
 * possible drawing issues if you call `love.graphics.present()` yourself, specifically between `setCanvas()` calls
