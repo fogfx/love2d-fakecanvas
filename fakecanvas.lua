@@ -39,6 +39,16 @@ local canvasmt = { __index = canvas }
 
 local canvases = setmetatable({ }, { __mode = "k" })
 
+local options = {
+	-- flip fake canvas images vertically (then unflip with quad) in order to 
+	-- match real canvas orientation. this only makes a difference inside 
+	-- shaders, when using the canvas' texture coordinates. if you do not need
+	-- to use this information, you can get a performance boost by disabling
+	-- this option. you can enable or disable vflipping for individual fake
+	-- canvases by placing setOption() calls around the newCanvas() call.
+	vflip = true, 
+}
+
 function canvas:clear (...) -- other option is chucking out the imagedata and creating a new one, but i'd probably end up using mapPixel anyway
 	local nargs = select("#", ...)
 	
@@ -115,8 +125,11 @@ local function Canvas (width, height)
 	c._imagedata  = love.image.newImageData(w, h)
 	c._image      = love.graphics.newImage(c._imagedata)
 	c._quad       = love.graphics.newQuad(0, 0, w, h, w, h)
+	c._vflip      = options.vflip
 	
-	c._quad:flip(false, true) -- flip vertically part 0
+	if options.vflip then
+		c._quad:flip(false, true) -- flip vertically part 0
+	end
 	
 	local p = newproxy(true)
 	
@@ -166,11 +179,14 @@ local function setCanvas (...)
 		love.graphics.setBackgroundColor(0, 0, 0, 0)
 		love.graphics.clear()
 		
-		-- flip vertically (unfortunately) so it can later be drawn unflipped in order to match texcoords of real canvases. part 1
-		local flipped = love.graphics.newImage(tempdata) 
-		love.graphics.draw(flipped, 0, current_canvas._imagedata:getHeight(), 0, 1, -1)
-		
-		local newdata = love.graphics.newScreenshot()
+		local newdata = tempdata
+		if current_canvas._vflip then
+			-- flip vertically (unfortunately) so it can later be drawn unflipped in order to match texcoords of real canvases. part 1
+			local flipped = love.graphics.newImage(tempdata) 
+			love.graphics.draw(flipped, 0, current_canvas._imagedata:getHeight(), 0, 1, -1)
+			
+			newdata = love.graphics.newScreenshot()
+		end
 		
 		--newdata:encode("__canvas.png")
 		
@@ -282,6 +298,14 @@ function M.getMaxCanvasSize (hw, hh)
 	else
 		return prevpo2(math.min(hw, w)), prevpo2(math.min(hh, h))
 	end
+end
+
+function M.setOption (name, value)
+	options[name] = value
+end
+
+function M.getOption (name)
+	return options[name]
 end
 
 M.enable()

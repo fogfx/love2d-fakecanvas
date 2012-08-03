@@ -6,7 +6,7 @@ it is more or less a drop-in library, in that all you need to do is call `requir
 
 it uses (a few) screenshots in order to isolate drawing operations, which means there are some amusing drawbacks:
 
-* it's slow
+* `setCanvas()` is fairly expensive
 * possible drawing issues if you call `love.graphics.present()` yourself, specifically between `setCanvas()` calls
 * canvas width/height cannot exceed the window's width/height, and if your hardware lacks PO2 support, canvases will be further limited to that as well. ie: for an 800x600 display the max canvas size is 512x512. 1024x768 will limit you to 1024x512, and so on.
 * any other weirdness you might run across
@@ -39,7 +39,7 @@ so, consider this more of a proof-of-concept than as an actual alternative. get 
 
 ###API
 
-fakecanvas directly replaces some of LÖVE's functions, so there are no special functions you need to use. however, the library itself consists of a couple extra functions:
+fakecanvas directly replaces some of LÖVE's functions, so there are no special functions you need to use. however, the library itself consists of some extra functions:
 
 * `enable([state])`: control fakecanvas' usage directly by passing the `state` argument. returns the module, for your chaining pleasure. `state` can be one of:
  * `true`: force usage of fakecanvas' functions even if real canvases are supported
@@ -48,6 +48,11 @@ fakecanvas directly replaces some of LÖVE's functions, so there are no special 
 
 * `getMaxCanvasSize([hint_w, hint_h])`: returns the maximum size fakecanvas can use for fake canvases. real canvases can likely be made much larger, so this can be used to put an upper limit on their size if needed. for convenience, you can provide width and height hints to this function, which will be clamped if they exceed the maximum size, or returned unmodified if they don't.
 
+* `setOption(name, value)`: sets the option `name` to `value`. current options are:
+ * `"vflip"`: use vertically-flipped texture coords for the canvas image, to match those of real canvases. visually this makes no difference, but does make a difference inside shaders. if your shaders are not sensitive to this information, you can disable this option and get a possible performance boost. by setting this option before calling `setCanvas()`, you can control this behavior on a per fake canvas basis. boolean: default `true`
+
+* `getOption(name)`: gets the current value of option `name`.
+ 
 ### Example main.lua
 
 ```lua
