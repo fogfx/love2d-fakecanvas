@@ -2,7 +2,7 @@
 
 fakecanvas is an attempt at emulating the functionality of canvases (render to texture) for hardware that does not support them.
 
-it is more or less a drop-in library, in that all you need to do is call `require 'fakecanvas'` (preferably inside `love.load`) to use it. fakecanvas' own functions will only be used if `love.graphics.isSupported "canvas"` is false, unless this behavior is overridden (see below).
+it is more or less a drop-in library, in that all you need to do is call `require 'fakecanvas'` (preferably inside `love.load`) to use it. fakecanvas' own functions will only be used if `love.graphics.isSupported "canvas"` is false, unless this behavior is overridden (see below). note: you must be using LÖVE 0.8
 
 it uses (a few) screenshots in order to isolate drawing operations, which means there are some amusing drawbacks:
 
@@ -51,7 +51,7 @@ fakecanvas directly replaces some of LÖVE's functions, so there are no special 
 * `setOption(name, value)`: sets the option `name` to `value`. current options are:
  * `"vflip"`: use vertically-flipped texture coords for the canvas image, to match those of real canvases. visually this makes no difference, but does make a difference inside shaders. if your shaders are not sensitive to this information, you can disable this option and get a possible performance boost. by setting this option before calling `setCanvas()`, you can control this behavior on a per fake canvas basis. boolean: default `true`
 
-* `getOption(name)`: gets the current value of option `name`.
+* `getOption(name)`: gets the current value of option `name`
  
 ### Example main.lua
 

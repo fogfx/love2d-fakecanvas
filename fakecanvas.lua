@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 --]]
 
+assert(love._version:match "^0.8", "fakecanvas requires LOVE 0.8")
 assert(debug, "fake canvases require access to the debug library")
 
 local canvas_supported      = love.graphics.isSupported "canvas"
