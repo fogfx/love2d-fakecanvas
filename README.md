@@ -7,7 +7,7 @@ it is more or less a drop-in library, in that all you need to do is call `requir
 it uses (a few) screenshots in order to isolate drawing operations, which means there are some amusing drawbacks:
 
 * `setCanvas()` is fairly expensive
-* clearing a canvas is really expensive
+* non zero-argument versions of canvas:clear() are really expensive
 * each `setCanvas()` call will allocate several megs of ram, this isn't a huge deal if you draw to canvases only occasionally. draw to one every frame, though...
 * possible drawing issues if you call `love.graphics.present()` yourself, specifically between `setCanvas()` calls
 * canvas width/height cannot exceed the window's width/height, and if your hardware lacks PO2 support, canvases will be further limited to that as well. ie: for an 800x600 display the max canvas size is 512x512. 1024x768 will limit you to 1024x512, and so on.

@@ -50,11 +50,13 @@ local options = {
 	vflip = true, 
 }
 
+local blank
 function canvas:clear (...) -- other option is chucking out the imagedata and creating a new one, but i'd probably end up using mapPixel anyway
 	local nargs = select("#", ...)
 	
 	if nargs == 0 then
-		canvases[self]._imagedata:mapPixel(function () return 0, 0, 0, 0 end)
+		local id = canvases[self]._imagedata
+		id:paste(blank, 0, 0, 0, 0, id:getWidth(), id:getHeight()) 
 	elseif nargs == 1 and type(...) == "table" then
 		local t = ...
 		local r, g, b, a = tonumber(t[1]) or 0, tonumber(t[2]) or 0, tonumber(t[3]) or 0, tonumber(t[4]) or 255
@@ -317,6 +319,8 @@ end
 function M.getOption (name)
 	return options[name]
 end
+
+blank = love.image.newImageData(M.getMaxCanvasSize())
 
 M.enable()
 
