@@ -245,11 +245,11 @@ local _wrap_funcs = {
 		end
 		return _love_funcs.draw(obj, x, y, r, sx, sy, ox, oy, kx, ky)
 	end,
-	drawq = function (obj, x, y, r, sx, sy, ox, oy, kx, ky)
+	drawq = function (obj, q, x, y, r, sx, sy, ox, oy, kx, ky)
 		if canvases[obj] then
-			return _love_funcs.drawq(obj:_getImage(), x, y, r, sx, sy, ox, oy, kx, ky)
+			return _love_funcs.drawq(obj:_getImage(), q or obj:_getQuad(), x, y, r, sx, sy, ox, oy, kx, ky)
 		end
-		return _love_funcs.drawq(obj, x, y, r, sx, sy, ox, oy, kx, ky)
+		return _love_funcs.drawq(obj, q, x, y, r, sx, sy, ox, oy, kx, ky)
 	end,
 	
 	pe_send   = function (pe, name, data)
