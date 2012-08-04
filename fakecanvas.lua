@@ -146,18 +146,33 @@ local function getCanvas ()
 	return current_canvas
 end
 
-local _fb_state 
-local function savefbstate ()
-	_fb_state = {
-		color   = { love.graphics.getBackgroundColor() },
-		data    = love.graphics.newScreenshot(),
-		scissor = { love.graphics.getScissor() },
-	}
-	_fb_state.image = love.graphics.newImage(_fb_state.data)
-	--_fb_state.data:encode("__fb.png")
-end
+local _fb_states = { }
 
-savefbstate()
+local ccount = 0
+local function screenshot (state)
+	local canvas   = state.canvas
+	
+	love.graphics.setColor(255, 255, 255, 255)
+	
+	local drawn = love.graphics.newScreenshot()
+	
+	if canvas._vflip then -- flip vertically (unfortunately) so it can later be drawn unflipped in order to match texcoords of real canvases. part 1
+		love.graphics.setBackgroundColor(0, 0, 0, 0)
+		love.graphics.clear()
+		
+		local flipped = love.graphics.newImage(drawn) 
+		love.graphics.draw(flipped, 0, canvas._imagedata:getHeight(), 0, 1, -1)
+		
+		drawn = love.graphics.newScreenshot()
+	end
+	
+	canvas._imagedata:paste(drawn, 0, 0, 0, 0, canvas._imagedata:getWidth(), canvas._imagedata:getHeight())
+	canvas._image = love.graphics.newImage(canvas._imagedata) -- apparently images don't update when their imagedata changes, so
+	
+	love.graphics.draw(canvas._image, 0, 0)
+	love.graphics.setBackgroundColor(unpack(state.color))
+	love.graphics.setScissor(unpack(state.scissor))
+end
 
 local function setCanvas (...)
 	assert(select("#", ...) == 0 or (select("#", ...) == 1 and type(...) == "userdata"), "Incorrect parameter type: expected userdata")
@@ -165,42 +180,36 @@ local function setCanvas (...)
 	
 	local to = ...
 	if to then
-		current_canvas = canvases[to]
-		--print "saving background state"
-		savefbstate()
+		local old_canvas = current_canvas
+		local current_canvas = canvases[to]
 		
-		--print "rendering setup"
-		love.graphics.setScissor()
-		love.graphics.setBackgroundColor(0, 0, 0, 0)
-		love.graphics.clear()
-	else
-		--print "saving to canvas"
-		local tempdata = love.graphics.newScreenshot()
+		local current_state = { 
+			canvas  = current_canvas,
+			data    = love.graphics.newScreenshot(),
+			color   = { love.graphics.getBackgroundColor() },
+			scissor = { love.graphics.getScissor() },
+		}
+		current_state.image = love.graphics.newImage(current_state.data)
 		
-		love.graphics.setBackgroundColor(0, 0, 0, 0)
-		love.graphics.clear()
-		
-		local newdata = tempdata
-		if current_canvas._vflip then
-			-- flip vertically (unfortunately) so it can later be drawn unflipped in order to match texcoords of real canvases. part 1
-			local flipped = love.graphics.newImage(tempdata) 
-			love.graphics.draw(flipped, 0, current_canvas._imagedata:getHeight(), 0, 1, -1)
-			
-			newdata = love.graphics.newScreenshot()
+		if #_fb_states > 0 then
+			screenshot(table.remove(_fb_states))
 		end
 		
-		--newdata:encode("__canvas.png")
-		
-		current_canvas._imagedata:paste(newdata, 0, 0, 0, 0, current_canvas._imagedata:getWidth(), current_canvas._imagedata:getHeight())
-		current_canvas._image = love.graphics.newImage(current_canvas._imagedata) -- apparently images don't update when their imagedata changes, so
-		
-		--print "restoring background state"
+		love.graphics.setScissor()
 		love.graphics.setBackgroundColor(0, 0, 0, 0)
 		love.graphics.clear()
-		love.graphics.setScissor()
-		love.graphics.draw(_fb_state.image, 0, 0)
-		love.graphics.setBackgroundColor(unpack(_fb_state.color))
-		love.graphics.setScissor(unpack(_fb_state.scissor))
+
+		table.insert(_fb_states, current_state)
+		
+	else
+		if #_fb_states == 0 then return end -- only possible if multiple consecutive setCanvas() calls are made with no arguments; nothing to do
+
+		screenshot(table.remove(_fb_states))
+		
+		while #_fb_states > 0 do
+			table.remove(_fb_states)
+		end
+		
 		current_canvas = nil
 	end
 end
