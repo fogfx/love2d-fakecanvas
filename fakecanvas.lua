@@ -239,17 +239,17 @@ local _wrap_funcs = {
 	setCanvas = setCanvas,
 	newCanvas = Canvas,
 	
-	draw = function (obj, ...)
+	draw = function (obj, x, y, r, sx, sy, ox, oy, kx, ky)
 		if canvases[obj] then
-			return _love_funcs.drawq(obj:_getImage(), obj:_getQuad(), ...) -- flip texcoords part 2
+			return _love_funcs.drawq(obj:_getImage(), obj:_getQuad(), x or 0, y or 0, r, sx, sy, ox, oy, kx, ky) -- flip texcoords part 2
 		end
-		return _love_funcs.draw(obj, ...)
+		return _love_funcs.draw(obj, x, y, r, sx, sy, ox, oy, kx, ky)
 	end,
-	drawq = function (obj, ...)
+	drawq = function (obj, x, y, r, sx, sy, ox, oy, kx, ky)
 		if canvases[obj] then
-			return _love_funcs.drawq(obj:_getImage(), ...)
+			return _love_funcs.drawq(obj:_getImage(), x, y, r, sx, sy, ox, oy, kx, ky)
 		end
-		return _love_funcs.drawq(obj, ...)
+		return _love_funcs.drawq(obj, x, y, r, sx, sy, ox, oy, kx, ky)
 	end,
 	
 	pe_send   = function (pe, name, data)
