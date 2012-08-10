@@ -34,7 +34,7 @@ local pixeleffect_supported = love.graphics.isSupported "pixeleffect"
 local function nextpo2 (x) return 2^math.ceil(math.log(x) / math.log(2)) end
 local function prevpo2 (x) return 2^math.floor(math.log(x) / math.log(2)) end
 
-local _types = { "Canvas" == true, "Object" == true, "Drawable" == true }
+local _types = { Canvas = true, Object = true, Drawable = true }
 local canvas = { }
 local canvasmt = { __index = canvas }
 
