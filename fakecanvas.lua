@@ -51,7 +51,7 @@ local options = {
 }
 
 local blank
-function canvas:clear (...) -- other option is chucking out the imagedata and creating a new one, but i'd probably end up using mapPixel anyway
+function canvas:clear (...)
 	local nargs = select("#", ...)
 	
 	if nargs == 0 then
@@ -140,7 +140,7 @@ local function Canvas (width, height)
 	
 	getmetatable(p).__index = canvasmt.__index
 	
-	return p --setmetatable(p, canvasmt)
+	return p 
 end
 
 local current_canvas
@@ -262,11 +262,6 @@ local _wrap_funcs = {
 
 local M = { }
 
--- enable use of fake canvases
--- state: 
---    true:  use fake canvases even if real ones are supported 
---    false: disable canvases entirely
---    nil:   use real or fake canvases based on support
 function M.enable (state)
 	if state == true or not canvas_supported then
 		love.graphics.getCanvas = _wrap_funcs.getCanvas
